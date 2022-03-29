@@ -5,10 +5,8 @@ dintr-un anumit interval, si value, numar real) o lista dublu inlantuita (si
 doi pointeri first si last, ce arata spre primul, respectiv ultimul element al
 listei).
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 Sarcina 2.1 (e1):
-    Eliminare de except, ii folosind metode statistice
+    *Eliminare de exceptii folosind metode statistice
     
 Am implementat doua functii - "medie" si "devitatie" ce calculeaza media
 valorilor din fereastra, respectiv deviatia standard a valorilor din fereastra.
