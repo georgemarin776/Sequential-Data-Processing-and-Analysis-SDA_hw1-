@@ -45,21 +45,6 @@ void init(dlist **first, dlist **last) {
 
 }
 
-void clear(dlist **first, dlist **last) {
-
-    dlist *Node = (*first)->next;
-
-    while (Node != (*last)) {
-
-        dlist *nextNode = Node->next;
-        free(Node);
-        Node = nextNode;
-    }
-
-    free(*first);
-    free(*last);
-}
-
 void add(dlist *last, ull timestamp, double value) {
 
     dlist *newNode = NULL;
@@ -169,15 +154,11 @@ void e1(dlist *first) {
     for (i = 0; i < k / 2; i++, startNode = startNode->next);
     for (i = 0; i < k / 2; i++, finalNode = finalNode->previous);
 
-    //printf("%.2f %.2f\n", startNode->value, finalNode->value);
-
     for (dlist *Node = startNode; Node != finalNode->next; Node = Node->next) {
         
         dlist *medieNode = Node;
         for (i = 0; i < k/2; i++, medieNode = medieNode->previous);
         double value = Node->value, med = medie(medieNode, k), dev = deviatie(medieNode, k);
-
-        //printf("average = %lf deviation = %lf %d\n", med, dev, value <= med + dev && value >= med - dev);
 
         if (value > med + dev || value < med - dev) {
             Node->exists = 0;
@@ -189,7 +170,7 @@ void e1(dlist *first) {
 
 double med3(double a, double b, double c) {
 
-    return max(min(a, b), min(c, max(a, b)));
+    return max(min(a, b), min(c, max(a, b))); // returns median of 3 numbers
 }
 
 double med5(double a, double b, double c, double d, double e) {
@@ -237,7 +218,6 @@ void e2(dlist *first) {
         add(last_e2, Node->timestamp, det_mid5(Node->previous->previous));
     }
 
-    //clear(&first, &(first->previous));
     *first = *first_e2;
     *(first->previous) = *last_e2;
 
@@ -260,7 +240,6 @@ void e3(dlist *first) {
         add(last_e2, Node->timestamp, medie(Node->previous->previous, 5));
     }
 
-    //clear(&first, &(first->previous));
     *first = *first_e2;
     *(first->previous) = *last_e2;
 }
@@ -279,7 +258,6 @@ void u(dlist *first) {
             Node->value = (Node->value + Node->previous->value) / 2;
         }
     }
-    
 }
 
 double w(double i, double k) {
@@ -289,7 +267,6 @@ double w(double i, double k) {
     for (j = 0; j < 3; j++) {
         sum += squared(j / (k - 1)) * 0.9 + 0.1;
     }
-
     return (squared(i / (k - 1)) * 0.9 + 0.1) / sum;
 }
 
@@ -315,14 +292,6 @@ void c(dlist *first) {
     dlist *startNode = first->next, *finalNode = first->previous->previous;
     int i;
 
-    /*
-    dlist *first_e2 = NULL, *last_e2 = NULL;
-    init(&first_e2, &last_e2);
-    add(last_e2, startNode->timestamp, startNode->value);
-    add(last_e2, startNode->next->timestamp, startNode->next->value);
-    add(last_e2, startNode->next->next->timestamp, startNode->next->next->value);
-    */
-
     for (i = 0; i < 2; i++, startNode = startNode->next);
     for (i = 0; i < 2; i++, finalNode = finalNode->previous);
    
@@ -335,32 +304,17 @@ void c(dlist *first) {
             double prev_timestamp = Node->previous->timestamp, timestamp = Node->timestamp;
             double left_w2 = Node->previous->value, left_w1 = Node->previous->previous->value, left_w0 = Node->previous->previous->previous->value;
             double right_w2 = Node->value, right_w1 = Node->next->value, right_w0 = Node->next->next->value;
-            //printf("%lf %lf %lf\n",  w0, w1, w2);
 
             for(i = prev_timestamp + 200; i < Node->timestamp; i += 200) {
                 
                 double C = (double)(i - prev_timestamp) / (timestamp - prev_timestamp);
-                //printf("%d %lf\n", i, C);
                 double left_sum = left_w2 * w2 + left_w1 * w1 + left_w0 * w0;
                 double right_sum = right_w2 * w2 + right_w1 * w1 + right_w0 * w0;
-                //add(last_e2, i, (1 - C) * left_sum + C * right_sum);
                 add_before(Node, i, (1 - C) * left_sum + C * right_sum);
             }
         }
-        //add(last_e2, Node->timestamp, Node->value);
 
     }
-
-    /*
-    add(last_e2, finalNode->next->timestamp, finalNode->next->value);
-    add(last_e2, finalNode->next->next->timestamp, finalNode->next->next->value);
-
-    //clear(&first, &(first->previous));
-
-    /*
-    first = *first_e2;
-    (first->previous) = *last_e2;
-    */
 }
 
 double max_t6(dlist *first) {
@@ -450,6 +404,6 @@ void main(int argc, char *argv[]) {
 
     call_fct(argc, argv, first, &t6);
 
-    if(t6 == 0)
+    if(t6 == 0) 
         print(first);
 }
