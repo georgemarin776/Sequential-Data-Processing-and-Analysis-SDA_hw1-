@@ -19,3 +19,6 @@ parcurgerea tuturor nodurilor, se apeleaza functia "remove_nodes()", ce sterge
 nodurile (verifica valoarea campului "exists" si, in caz ca este 0, apeleaza
 functia rm, ce elimina legaturile nodului cu "previous" si "next" si
 elibereaza memoria).
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
