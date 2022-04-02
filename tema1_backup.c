@@ -10,7 +10,6 @@ typedef unsigned short int usi;
 typedef struct dlist{
 
     double value;
-    double value_alt;
     ull timestamp;
     usi exists;
     struct dlist *next, *previous;
@@ -46,22 +45,46 @@ void init(dlist **first, dlist **last) {
 
 }
 
-void clear(dlist *first) {
+void clear(dlist **first) {
 
-    if (first != NULL)
-    {
-        dlist *Node = NULL;
-        if(first->next != NULL)
-            Node = first->next;
+    dlist *Node = (*first)->next;
 
-        while(Node != first->previous && Node != NULL) {
+    while(Node != (*first)->previous) {
 
-            Node = Node->next;
-            if(Node->previous != NULL)
-                free(Node->previous);
-        }
-    
+        Node = Node->next;
+        if(Node->previous != NULL)
+            free(Node->previous);
     }
+
+    if((*first)->previous != NULL)
+        free((*first)->previous);
+    
+    if(*first != NULL)
+        free(*first);
+}
+
+void cpy(dlist *first, dlist *first_e2) {
+    
+    dlist *Node = first->next, *Node_e2 = first_e2->next;
+
+    for (; Node_e2 != first_e2->previous; Node_e2 = Node_e2->next) {
+
+        Node = Node->next, Node_e2 = Node_e2->next;
+
+        Node->previous->timestamp = Node_e2->previous->timestamp;
+        Node->previous->value = Node_e2->previous->value;
+    }
+
+    Node_e2 = Node;
+
+    while (Node != first->previous) {
+
+        Node = Node->next;
+        free(Node->previous);
+    }
+
+    Node_e2->next = first->previous;
+    first->previous->previous = Node_e2;
 }
 
 void add(dlist *last, ull timestamp, double value) {
@@ -72,7 +95,6 @@ void add(dlist *last, ull timestamp, double value) {
     newNode->timestamp = timestamp;
     newNode->value = value;
     newNode->exists = 1;
-    newNode->value_alt = 0;
     
     last->previous->next = newNode;
     newNode->previous = last->previous;
@@ -166,17 +188,6 @@ void remove_nodes(dlist *first) {
     }
 }
 
-void remove_nodes_e23(dlist *first) {
-
-    dlist *Node = first->next;
-
-    while (Node != first->previous) {
-        Node = Node->next;
-        if (Node->previous->value_alt == 0)
-            rm(Node->previous);
-    }
-}
-
 void e1(dlist *first) {
     
     dlist *startNode = first->next, *finalNode = first->previous->previous;
@@ -230,32 +241,12 @@ double det_mid5(dlist *Node) {
     return med5(a, b, c, d, e);
 }
 
-void set_0(dlist *first) {
-
-    dlist *Node = first->next;
-
-    while (Node != first->previous) {
-
-        Node->value_alt = 0;
-        Node = Node -> next;
-    }
-}
-
-void set_value(dlist *first) {
-
-    dlist *Node = first->next;
-
-    while (Node != first->previous) {
-
-        Node->value = Node->value_alt;
-        Node = Node -> next;
-    }
-}
-
 void e2(dlist *first) {
 
-    set_0(first);
     dlist *startNode = first->next, *finalNode = first->previous->previous;
+    dlist *first_e2 = NULL, *last_e2 = NULL;
+
+    init(&first_e2, &last_e2);
 
     int i;
 
@@ -264,17 +255,21 @@ void e2(dlist *first) {
 
     for (dlist *Node = startNode; Node != finalNode->next; Node = Node->next) {
         
-        Node->value_alt = det_mid5(Node->previous->previous);
+        add(last_e2, Node->timestamp, det_mid5(Node->previous->previous));
     }
 
-    remove_nodes_e23(first);
-    set_value(first);
+    clear(&first);
+    *first = *first_e2;
+    *(first->previous) = *last_e2;
+
 }
 
 void e3(dlist *first) {
 
-    set_0(first);
     dlist *startNode = first->next, *finalNode = first->previous->previous;
+    dlist *first_e2 = NULL, *last_e2 = NULL;
+
+    init(&first_e2, &last_e2);
 
     int i;
 
@@ -283,11 +278,12 @@ void e3(dlist *first) {
 
     for (dlist *Node = startNode; Node != finalNode->next; Node = Node->next) {
         
-        Node->value_alt = medie(Node->previous->previous, 5);
+        add(last_e2, Node->timestamp, medie(Node->previous->previous, 5));
     }
 
-    remove_nodes_e23(first);
-    set_value(first);
+    clear(&first);
+    *first = *first_e2;
+    *(first->previous) = *last_e2;
 }
 
 void u(dlist *first) {
@@ -453,10 +449,6 @@ int main(int argc, char *argv[]) {
     if(t6 == 0) 
         print(first);
 
-    clear(first);
+    clear(&first);
 
-    free(first);
-    free(last);
-
-    return 0;
 }

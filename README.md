@@ -5,6 +5,7 @@ dintr-un anumit interval, si value, numar real) o lista dublu inlantuita (si
 doi pointeri first si last, ce arata spre primul, respectiv ultimul element al
 listei).
 
+
 Sarcina 2.1 (e1):
     *Eliminare de exceptii folosind metode statistice
     
@@ -17,6 +18,10 @@ parcurgerea tuturor nodurilor, se apeleaza functia "remove_nodes()", ce sterge
 nodurile (verifica valoarea campului "exists" si, in caz ca este 0, apeleaza
 functia rm, ce elimina legaturile nodului cu "previous" si "next" si
 elibereaza memoria).
+
+
+Sarcina 2.2.1 (e2):
+    *Filtrare mediana
 
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
